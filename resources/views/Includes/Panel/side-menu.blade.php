@@ -6,7 +6,7 @@
                 <li><a href="index.html"><i class="icon ti-home"></i> <span>داشبورد</span> </a></li>
                 <li><a href="#"><i class="icon ti-rocket"></i> <span>کاربران</span> </a>
                     <ul>
-                        <li><a href="users.html">لیست کاربران </a></li>
+                        <li><a href="{{route('Panel.UserList')}}">لیست کاربران </a></li>
                         <li><a href="#">نقش ها </a></li>
                     </ul>
                 </li>
