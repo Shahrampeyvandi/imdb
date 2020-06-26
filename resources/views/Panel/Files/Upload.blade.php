@@ -124,33 +124,27 @@
                         </div>
                         <div class="casts mt-3">
                             <h6 class="">نویسنده (ها)</h6>
-                            <input type="text" class="form-control mb-2" name="" id="" placeholder="جدید">
-                            <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addWriter(event)">افزودن</a>
-
-                            <div class="cat-wrapper">
-                                <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" id="writer" name="writer[]" value="ماجراجویی"
-                                        class="custom-control-input">
-                                    <label class="custom-control-label" for="writer">رامبد
-                                        جوان</label>
-                                </div>
-
-                            </div>
+                          <div class="form-group">
+							<select class="js-example-basic-single" multiple dir="rtl">
+                                @foreach ($actors as $actor)
+                                    
+                                  <option value="{{$actor->id}}">{{$actor->name}}</option>
+                                @endforeach
+                               
+                            </select>
+                        </div>
                         </div>
                         <div class="casts mt-3">
                             <h6 class="">کارگردان</h6>
-                            <input type="text" class="form-control mb-2" name="" id="" placeholder="جدید">
-                            <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addCreator(event)">افزودن</a>
-
-                            <div class="cat-wrapper">
-                                <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" id="creator" name="creator[]" value="ماجراجویی"
-                                        class="custom-control-input">
-                                    <label class="custom-control-label" for="creator">رامبد
-                                        جوان</label>
-                                </div>
-
-                            </div>
+                            <div class="form-group">
+							<select class="js-example-basic-single" multiple dir="rtl">
+                                @foreach ($actors as $actor)
+                                    
+                                  <option value="{{$actor->id}}">{{$actor->name}}</option>
+                                @endforeach
+                               
+                            </select>
+                        </div>
                         </div>
                         <div class="casts mt-3">
                             <h6 class="">زبان</h6>
