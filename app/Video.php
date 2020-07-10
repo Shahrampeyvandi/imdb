@@ -13,5 +13,10 @@ class Video extends Model
     {
         return $this->morphTo();
     }
+
+    public function quality()
+    {
+        return $this->hasOne(Quality::class,'quality_id');
+    }
  
 }

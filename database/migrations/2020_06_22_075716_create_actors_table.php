@@ -15,9 +15,8 @@ class CreateActorsTable extends Migration
     {
         Schema::create('actors', function (Blueprint $table) {
             $table->id();
-            $table->string('page_url')->nullable();
             $table->string('name');
-            $table->string('picture')->nullable();
+            $table->text('image')->nullable();
             $table->text('bio')->nullable();
             $table->timestamps();
         });

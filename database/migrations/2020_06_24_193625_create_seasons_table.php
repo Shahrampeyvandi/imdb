@@ -15,9 +15,10 @@ class CreateSeasonsTable extends Migration
     {
         Schema::create('seasons', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->integer('number');
             $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('section');
             $table->timestamps();
         });
     }

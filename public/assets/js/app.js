@@ -25,18 +25,18 @@
     wind_.on('load', function () {
         $('.page-loader').fadeOut(700, function () {
 
-            setTimeout(function () {
-                toastr.options = {
-                    timeOut: 3000,
-                    progressBar: true,
-                    showMethod: "slideDown",
-                    hideMethod: "slideUp",
-                    showDuration: 200,
-                    hideDuration: 200
-                };
+            // setTimeout(function () {
+            //     toastr.options = {
+            //         timeOut: 3000,
+            //         progressBar: true,
+            //         showMethod: "slideDown",
+            //         hideMethod: "slideUp",
+            //         showDuration: 200,
+            //         hideDuration: 200
+            //     };
 
-                toastr.success('به قالب مدیریتی Gramos خوش آمدید!');
-            }, 1000);
+            //     // toastr.success('به قالب مدیریتی Gramos خوش آمدید!');
+            // }, 1000);
 
         });
 

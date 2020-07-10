@@ -4,8 +4,8 @@
 
             <div class="header-logo">
                 <a href="#">
-                    <img src="assets/media/image/light-logo.png" alt="...">
-                    <span class="logo-text d-none d-lg-block">فیلم برتر</span>
+                    {{-- <img src="assets/media/image/light-logo.png" alt="..."> --}}
+                    <span class="logo-text d-none d-lg-block">siOne</span>
                 </a>
             </div>
 
@@ -26,7 +26,7 @@
                     <li class="nav-item dropdown">
                         <a href="#" data-toggle="dropdown">
                             <figure class="avatar avatar-sm avatar-state-success">
-                                <img class="rounded-circle" src="assets/media/image/avatar.jpg" alt="...">
+                                <img class="rounded-circle" src="{{asset('assets/images/avatar.png')}}" alt="عکس پروفایل">
                             </figure>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">

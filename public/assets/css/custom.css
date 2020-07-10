@@ -149,3 +149,13 @@ body.dark .layout-alert {
     padding: 20px 10px;
     border-radius: 4px;
 }
+
+.small-box {
+    display: flex;
+    justify-content: space-around;
+    min-height: 120px;
+}
+span.__icon {
+    padding: 6px 15px 6px 13px;
+    border-radius: 5px;
+}

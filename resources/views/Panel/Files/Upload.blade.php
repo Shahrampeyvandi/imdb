@@ -1,6 +1,50 @@
 @extends('Layout.Panel')
 
 @section('content')
+<div class="modal fade" id="addActor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form action="{{route('Panel.Actor.Insert')}}" method="post" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">افزودن</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <select name="type" class="custom-select  mb-3">
+                                <option value="actor">بازیگر</option>
+                                <option value="writer">نویسنده</option>
+                                <option value="creator">کارگردان</option>
+
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control" name="fullname" id="fullname" value=""
+                                placeholder="نام کامل">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="">توضیحات</label>
+                            <textarea type="text" class="form-control" name="description" id="description"></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="file" class="form-control dropify" name="picture" id="picture"
+                                data-default-file="" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class=" btn btn-success text-white">ثبت</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="container-fluid">
     <div class="card">
         <div class="card-body">
@@ -10,65 +54,89 @@
             </div>
             <form id="upload-file" method="post" action="{{route('Panel.UploadFile')}}" enctype="multipart/form-data">
                 @csrf
+                @isset($post)
+                @method('PUT')
+                <input type="hidden" name="post_id" id="post_id" value="{{$post->id}}">
+                @endisset
                 <div class="row">
                     <div class="col-md-8">
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <input type="text" class="form-control" name="title" id="title" placeholder="عنوان">
+                                <input type="text" class="form-control" name="title" id="title"
+                                    value="{{$post->name ?? ''}}" placeholder="عنوان">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
-                                <select name="type" class="custom-select  mb-3">
-                                    <option value="movies" selected>سینمایی</option>
-                                    <option value="series">سریال</option>
+                                <select name="type" id="movie-type" class=" custom-select  mb-3"
+                                    onchange="seriesOptions(event)">
+                                    <option value="movies" @if (isset($post) && $post->type == 'movies')
+                                        checked
+                                        @endif>سینمایی</option>
+                                    <option value="series" @if (isset($post) && $post->type == 'series')
+                                        checked
+                                        @endif>سریال</option>
                                 </select>
                             </div>
-                           <div class="form-group form-inline col-md-8">    
-                                <label for="" >محدوده سنی</label>
-                                <input type="number" class="form-control col-md-3 mx-2" name="age_rate" id="age_rate" placeholder="">
-                           <span >+</span>
+                            <div class="form-group form-inline col-md-8">
+                                <label for="">محدوده سنی</label>
+                                <input type="number" class="form-control col-md-3 mx-2" name="age_rate" id="age_rate"
+                                    placeholder="" value="{{$post->age_rate ?? ''}}">
+                                <span>+</span>
                             </div>
-
                         </div>
                         <div class="row">
-
                             <div class="form-group col-md-12">
                                 <label for="desc">توضیحات : </label>
-                                <textarea class="form-control" name="desc" id="desc" cols="30" rows="8"></textarea>
+                                <textarea class="form-control" name="desc" id="desc" cols="30"
+                                    rows="8">{{$post->description ?? ''}}</textarea>
                             </div>
                         </div>
                         <div class="row">
-
                             <div class="form-group col-md-12">
                                 <label for="short_desc">توضیحات کوتاه: </label>
                                 <textarea class="form-control" name="short_desc" id="short_desc" cols="30"
-                                    rows="8"></textarea>
+                                    rows="8">{{$post->short_description ?? ''}}</textarea>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-md-6">
+                                @isset($post)
+                                <video src="{{$post->trailer}}"></video>
+                                @endisset
                                 <div class="form-row">
                                     <div class="col-md-3">
                                         <label for=""> تریلر: </label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input type="file" name="trailer" class="dropify" data-default-file="" />
+                                        <input type="file" name="trailer" @isset($post) class="form-control" @else
+                                            class="dropify" data-default-file="" @endisset />
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
+                                @isset($post)
+                                <img src="{{$post->poster}}" alt="">
+                                @endisset
                                 <div class="form-row">
                                     <div class="col-md-3">
                                         <label for=""> پوستر فیلم: </label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input type="file" name="poster" class="dropify" data-default-file="" />
+                                        <input type="file" name="poster" @isset($post) class="form-control" @else
+                                            class="dropify" data-default-file="" @endisset />
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <label for="desc">تصاویر: </label>
+                        @isset($post)
+                        @foreach ($post->images as $image)
+                        <div class=" col-md-3">
+                            <img src="{{$image->url}}" alt="">
+                        </div>
+                        @endforeach
+                        @endisset
                         <span style="cursor: pointer;" href="" onclick="getClone(this)"><i class="fa fa-plus"></i>
                             افزودن </span>
 
@@ -81,7 +149,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="col-md-4 right-side">
                         <div class="cat">
@@ -89,102 +156,116 @@
                             <input type="text" class="form-control mb-2" name="" id="" placeholder="جدید">
                             <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addCategory(event)">افزودن</a>
                             <div class="cat-wrapper">
+                                @isset($post)
+                                @foreach ($post->categories as $key => $item)
                                 <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" id="cat" name="category[]" value="ماجراجویی"
+                                    <input type="checkbox" id="{{$key+1}}" name="category[]" value="{{$item->name}}"
+                                    {{$post->categories()->pluck('id')->contains($item->id) ? 'checked' : ''}}
                                         class="custom-control-input">
-                                    <label class="custom-control-label" for="cat">ماجراجویی</label>
+                                    <label class="custom-control-label" for="{{$key+1}}">{{$item->name}}</label>
                                 </div>
+                                @endforeach
+                                @else
+                                @foreach (\App\Category::all() as $key => $item)
+                                <div class="custom-control custom-checkbox custom-control-inline">
+                                    <input type="checkbox" id="{{$key+1}}" name="category[]" value="{{$item->name}}"
+                                        class="custom-control-input">
+                                    <label class="custom-control-label" for="{{$key+1}}">{{$item->name}}</label>
+                                </div>
+                                @endforeach
+
+                                @endisset
 
                             </div>
                         </div>
-                        {{-- <div class="tag mt-3">
-                            <h6 class="">تگ ها: </h6>
-                            <input type="text" class="form-control mb-2" name="tags" id="tags" placeholder="جدید">
-                            <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addTag(event)">افزودن</a>
-                            <div class="cat-wrapper">
-                                <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" id="tag" name="tag[]" value="ماجراجویی"
-                                        class="custom-control-input">
-                                    <label class="custom-control-label" for="tag">سیاسی</label>
-                                </div>
-
+                      
+                        <div class="casts mt-3">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="">بازیگران: </h6>
+                                <a href="#" title="جدید " data-toggle="modal" data-target="#addActor"
+                                    class="m-2 btn btn-sm btn-primary">
+                                    جدید
+                                    <i class="fas fa-plus"></i>
+                                </a>
                             </div>
-                        </div> --}}
-                        <div class="casts mt-3">
-                            <h6 class="">بازیگران: </h6>
                             <div class="form-group">
-							<select class="js-example-basic-single" multiple dir="rtl">
-                                @foreach ($actors as $actor)
-                                    
-                                  <option value="{{$actor->id}}">{{$actor->name}}</option>
-                                @endforeach
-                               
-                            </select>
-                        </div>
-                        </div>
-                        <div class="casts mt-3">
-                            <h6 class="">نویسنده (ها)</h6>
-                          <div class="form-group">
-							<select class="js-example-basic-single" multiple dir="rtl">
-                                @foreach ($actors as $actor)
-                                    
-                                  <option value="{{$actor->id}}">{{$actor->name}}</option>
-                                @endforeach
-                               
-                            </select>
-                        </div>
+                                <select name="actors[]" class="js-example-basic-single" multiple dir="rtl">
+                                    @foreach ($actors as $actor)
+                                    <option value="{{$actor->id}}"
+                                        {{isset($post) && $post->actors()->pluck('id')->contains($actor->id) ? 'selected' : ''}}>
+                                        {{$actor->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <div class="casts mt-3">
-                            <h6 class="">کارگردان</h6>
+                            <div class="d-flex justify-content-between">
+                                <h6 class="">نویسنده (ها)</h6>
+                                <a href="#" title="جدید " data-toggle="modal" data-target="#addActor"
+                                    class="m-2 btn btn-sm btn-primary">
+                                    جدید
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            </div>
                             <div class="form-group">
-							<select class="js-example-basic-single" multiple dir="rtl">
-                                @foreach ($actors as $actor)
-                                    
-                                  <option value="{{$actor->id}}">{{$actor->name}}</option>
-                                @endforeach
-                               
-                            </select>
+                                <select name="writers[]" class="js-example-basic-single" multiple dir="rtl">
+                                    @foreach ($writers as $writer)
+                                    <option value="{{$writer->id}}"
+                                        {{isset($post) && $post->writers()->pluck('id')->contains($writer->id) ? 'selected' : ''}}>
+                                        {{$writer->name}}</option>
+                                    @endforeach
+
+                                </select>
+                            </div>
                         </div>
+                        <div class="casts mt-3">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="">کارگردان</h6>
+                                <a href="#" title="جدید " data-toggle="modal" data-target="#addActor"
+                                    class="m-2 btn btn-sm btn-primary">
+                                    جدید
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            </div>
+                            <div class="form-group">
+                                <select name="directors[]" class="js-example-basic-single" multiple dir="rtl">
+                                    @foreach ($directors as $director)
+
+                                    <option value="{{$director->id}}"
+                                        {{isset($post) && $post->directors()->pluck('id')->contains($director->id) ? 'selected' : ''}}>
+                                        {{$director->name}}</option>
+                                    @endforeach
+
+                                </select>
+                            </div>
                         </div>
                         <div class="casts mt-3">
                             <h6 class="">زبان</h6>
                             <input type="text" class="form-control mb-2" name="" id="" placeholder="جدید">
                             <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addLanguage(event)">افزودن</a>
                             <div class="cat-wrapper">
+                                @foreach (\App\Language::all() as $language)
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="language" name="language[]" value="ماجراجویی"
+                                    <input type="radio" id="language" name="language" value="{{$language->id}}"
+                                        {{isset($post) && $post->languages()->pluck('id')->contains($language->id) ? 'checked' : ''}}
                                         class="custom-control-input">
                                     <label class="custom-control-label" for="language">
-                                        فارسی</label>
+                                        {{$language->name}}</label>
                                 </div>
-
+                                @endforeach
                             </div>
                         </div>
-                        <div class="casts mt-3">
-                            <h6 class="">فصل</h6>
-                            <input type="text" class="form-control mb-2" name="" id="" placeholder="جدید">
-                            <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addSeason(event)">افزودن</a>
-                            <div class="cat-wrapper">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="season" name="season[]" value="ماجراجویی"
-                                        class="custom-control-input">
-                                    <label class="custom-control-label" for="season">
-                                        فصل اول</label>
-                                </div>
+                        <div class="series-options">
+                            <div class="casts mt-3">
+                                <h6 class="">فصل</h6>
+                                <input type="number" class="form-control mb-2" name="season" id="season"
+                                    placeholder="شماره فصل">
 
                             </div>
-                        </div>
-                        <div class="casts mt-3">
-                            <h6 class="">قسمت</h6>
-                            <input type="text" class="form-control mb-2" name="" id="" placeholder="جدید">
-                            <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addSection(event)">افزودن</a>
-                            <div class="cat-wrapper">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="section" name="section[]" value="ماجراجویی"
-                                        class="custom-control-input">
-                                    <label class="custom-control-label" for="section">
-                                        اول</label>
-                                </div>
+                            <div class="casts mt-3">
+                                <h6 class="">قسمت</h6>
+                                <input type="number" class="form-control mb-2" name="section" id="section"
+                                    placeholder="شماره قسمت">
 
                             </div>
                         </div>
@@ -212,51 +293,40 @@
                 </div>
             </form>
             <hr>
-            <form action="#" method="post" enctype="multipart/form-data">
-                @csrf
-                <div class="files-wrapper">
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <div class="form-row">
-                                <div class="col-md-3">
-                                    <label for=""> فایل: </label>
-                                </div>
-                                <div class="col-md-9">
-                                    <input type="file" name="file" id="file" class="dropify" data-default-file="" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <div class="custom-control custom-radio custom-control">
-                                <input type="radio" id="hd" name="quality[]" value="hd" class="custom-control-input">
-                                <label class="custom-control-label" for="hd">کیفیت بالا</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control">
-                                <input type="radio" id="md" name="quality[]" value="md" class="custom-control-input">
-                                <label class="custom-control-label" for="md">کیفیت متوسط</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control">
-                                <input type="radio" id="sd" name="quality[]" value="sd" class="custom-control-input">
-                                <label class="custom-control-label" for="sd">کیفیت پایین</label>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <a class="btn btn-sm btn-primary text-white" type="" onclick="uploadFile()">آپلود</a>
-                            <div class="progress mt-3">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0"
-                                    aria-valuemax="100" style="width: 0%">
-                                    0%
-                                </div>
-                            </div>
-                        </div>
+            <div>
 
-                    </div>
-                </div>
-                <a href="#" class="btn btn-sm btn-info text-white mb-5" onclick="addFile(event,this)">اضافه
-                    کردن فایل دیگر</a>
-            </form>
+            </div>
         </div>
     </div>
 </div>
-</div>
+@endsection
+@section('css')
+<style>
+    label.error {
+        font-size: 12px;
+        color: red;
+        /* position: absolute; */
+        /* top: -50px; */
+        /* right: 70px; */
+        margin-left: 50px;
+    }
+</style>
+@endsection
+
+@section('js')
+<script>
+    $('.series-options').hide()
+
+            function seriesOptions (event) {
+                let val = $(event.target).val()
+               
+                if(val == "series") {
+                     $('.series-options').show()
+                }else{
+                    $('.series-options').hide()
+                }
+            }
+
+            seriesOptions()
+</script>
 @endsection

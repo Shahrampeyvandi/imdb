@@ -18,7 +18,7 @@ class CreateVideosTable extends Migration
             $table->unsignedBigInteger('videoble_id');
             $table->string('videoble_type');
             $table->string('url');
-            $table->string('quality');
+            $table->string('quality_id');
             $table->string('description')->nullable();
             $table->timestamps();
         });
