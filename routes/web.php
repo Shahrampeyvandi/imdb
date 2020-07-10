@@ -16,5 +16,9 @@ Route::group(['prefix' => 'panel'], function () {
     Route::post('upload/video', 'Panel\UploadController@SaveVideo')->name('Panel.UploadVideo');
     Route::delete('post/delete', 'Panel\UploadController@DeletePost')->name('Panel.DeletePost');
     Route::delete('video/delete', 'Panel\UploadController@DeleteVideo')->name('Panel.DeleteVideo');
+    Route::get('plans/add', 'Panel\PlanController@Add')->name('Panel.AddPlan');
+    Route::post('plans/add', 'Panel\PlanController@Save')->name('Panel.AddPlan');  
+    Route::get('plans/list', 'Panel\PlanController@List')->name('Panel.PlanList');  
+    Route::delete('plans/delete', 'Panel\PlanController@Delete')->name('Panel.DeletePlan');  
 
 });

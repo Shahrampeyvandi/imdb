@@ -20,8 +20,8 @@
             </li>
              <li><a href="#"><i class="icon ti-star"></i> <span>اشتراک</span> </a>
                 <ul>
-                    <li><a href="#">افزودن</a></li>
-                <li><a href="#">لیست</a></li>
+                <li><a href="{{route('Panel.AddPlan')}}">افزودن</a></li>
+                <li><a href="{{route('Panel.PlanList')}}">لیست</a></li>
                 </ul>
             </li>
 

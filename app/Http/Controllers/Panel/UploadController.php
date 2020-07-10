@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Redirect;
 class UploadController extends Controller
 {
 
-    function list(Request $request) {
+   public function list(Request $request) {
         $posts = Post::latest()->get();
 
         return view('Panel.Files.List', compact('posts'));
@@ -212,7 +212,7 @@ class UploadController extends Controller
         $post->age_rate = $request->age_rate;
         $post->awards = $request->awards;
         $post->save();
-        
+
         foreach ($request->category as $key => $category) {
             if ($post->categories()->pluck('name')->contains($category)) {
                 continue;

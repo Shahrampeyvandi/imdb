@@ -172,7 +172,38 @@
         },
         "Please check your input."
     );
+     $("#add-plan").validate({
+         rules: {
+             name: {
+                 required: true,
+                 maxlength: 30,
+             },
+             time: {
+                 required: true,
+             },
+             price: {
+                 required: true,
+             },
+         },
+         messages: {
+             name: "لطفا عنوان فایل را وارد نمایید",
+             time: "لطفا تعداد روزهای فعال بودن اشتراک را وارد نمایید",
+             price: "لطفا قیمت اشتراک را وارد نمایید",
+         },
+     });
 
+    $(".add-actor").validate({
+        rules: {
+            fullname: {
+                required: true,
+                
+            }
+           
+        },
+        messages: {
+            fullname: "لطفا عنوان فایل را وارد نمایید",
+        },
+    });
     $("#upload-file").validate({
         rules: {
             title: {
@@ -191,7 +222,7 @@
             "actors[]": "required",
             "writers[]": "required",
             "directors[]": "required",
-            language:"required",
+            language: "required",
             season: {
                 required: function (element) {
                     return $("#movie-type").val() == "series";
@@ -260,9 +291,6 @@ function getClone(element) {
     $(".dropify").dropify(dropifyOptions);
 }
 
-
-
-
 function remove(el) {
     $(el).parent().remove();
 }
@@ -298,21 +326,21 @@ function addFile(event, el) {
                                             </div>
                                             <div class="custom-control custom-checkbox custom-control">
                                                 <input type="checkbox" id="${
-        id + 1
-        }" name="quality[]" value="md"
+                                                    id + 1
+                                                }" name="quality[]" value="md"
                                                     class="custom-control-input">
                                                 <label class="custom-control-label" for="${
-        id + 1
-        }">کیفیت متوسط</label>
+                                                    id + 1
+                                                }">کیفیت متوسط</label>
                                             </div>
                                             <div class="custom-control custom-checkbox custom-control">
                                                 <input type="checkbox" id="${
-        id + 2
-        }" name="quality[]" value="sd"
+                                                    id + 2
+                                                }" name="quality[]" value="sd"
                                                     class="custom-control-input">
                                                 <label class="custom-control-label" for="${
-        id + 2
-        }">کیفیت پایین</label>
+                                                    id + 2
+                                                }">کیفیت پایین</label>
                                             </div>
                                         </div>
                                         <div class="form-group col-md-3">
@@ -481,13 +509,12 @@ function addAward(event) {
     }
 }
 
-
 function addQuality(event) {
     event.preventDefault();
     let val = $(event.target).prev().val();
     if (val !== "") {
         let id = Math.random();
-        let wrapper = $(event.target).siblings('.wraper');
+        let wrapper = $(event.target).siblings(".wraper");
         wrapper.append(`
          <div class="custom-control custom-radio custom-control-inline">
                                 <input type="radio" id="${id}" name="quality"

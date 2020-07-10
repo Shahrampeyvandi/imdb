@@ -18,6 +18,8 @@ class CreatePlansTable extends Migration
             $table->string('name');
             $table->integer('price');
             $table->integer('discount')->default(0);
+            $table->integer('days')->default(0);
+            $table->text('description')->nullable();
             $table->boolean('active')->default(0);
             $table->timestamps();
         });
