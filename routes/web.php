@@ -3,6 +3,8 @@ Route::get('/', 'Panel\DashboardController@Index')->name('BaseUrl');
 Route::get('/admin/login', 'Panel\LoginController@Login')->name('Admin.Login');
 Route::post('/admin/login', 'Panel\LoginController@Verify')->name('Admin.Login');
 
+Route::get('/testapi', 'Panel\ImdbController@getmoviedetail')->name('Test.Api');
+
 // , 'middleware' => ['admin']
 Route::group(['prefix' => 'panel'], function () {
     Route::get('upload', 'Panel\UploadController@Add')->name('Panel.UploadFile');
