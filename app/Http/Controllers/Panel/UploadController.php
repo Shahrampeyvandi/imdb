@@ -36,9 +36,10 @@ class UploadController extends Controller
 
         return view('Panel.Files.Upload', compact(['writers', 'directors', 'actors', 'languages']));
     }
-
     public function SavePost(Request $request)
     {
+        if(!$request->has('category')) return back()->withErrors(['category', 'لطفا یک دسته بندی انتخاب کنید']);
+        if(!$request->has('language')) return back()->withErrors(['language', 'لطفا زبان فیلم را وارد نمایید']);
 
         $destinationPath = "files/posts/$request->title";
         if ($request->hasFile('poster')) {
@@ -49,13 +50,13 @@ class UploadController extends Controller
         } else {
             $Poster = '';
         }
-
         $post = new Post;
         $post->name = $request->title;
         $post->type = $request->type;
         $post->description = $request->desc;
         $post->short_description = $request->short_desc;
         $post->poster = $Poster;
+        $post->product_year = $request->year;
         $post->age_rate = $request->age_rate;
         $post->awards = $request->awards;
         if ($post->save()) {

@@ -319,7 +319,6 @@
                 filesize: 200 * 1024,
                 accept: "jpg|jpeg|png|JPG|JPEG|PNG",
             },
-           
 
             desc: "required",
             "category[]": "required",
@@ -337,7 +336,7 @@
                     return $("#movie-type").val() == "series";
                 },
             },
-           
+            year: "required",
         },
         messages: {
             title: {
@@ -355,8 +354,7 @@
             language: "لطفا زبان فیلم را وارد نمایید",
             season: "شماره فصل سریال را وارد نمایید",
             section: "شماره قسمت سریال را وارد نمایید",
-           
-           
+            year: "سال ساخت فیلم را وارد نمایید",
         },
     });
 

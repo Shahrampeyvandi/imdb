@@ -1,6 +1,7 @@
 @extends('Layout.Panel')
 
 @section('content')
+
 <div class="modal fade" id="addActor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -78,10 +79,15 @@
                                         @endif>سریال</option>
                                 </select>
                             </div>
-                            <div class="form-group form-inline col-md-8">
-                                <label for="">محدوده سنی</label>
-                                <input type="number" class="form-control col-md-3 mx-2" name="age_rate" id="age_rate"
-                                    placeholder="" value="{{$post->age_rate ?? ''}}">
+                             <div class="form-group col-md-">
+                         
+                            <input type="number" class="form-control" name="year" id="year" value=""
+                              placeholder="سال ساخت"  >
+                        </div>
+                            <div class="form-group form-inline col-md-4">
+                               
+                                <input type="number" class="form-control  mx-2" name="age_rate" id="age_rate"
+                                    placeholder="محدوده سنی" value="{{$post->age_rate ?? ''}}">
                                 <span>+</span>
                             </div>
                         </div>
@@ -163,6 +169,7 @@
                         <div class="cat">
                             <h6 class="">دسته بندی ها: </h6>
                             <input type="text" class="form-control mb-2" name="" id="" placeholder="جدید">
+                            <span>{{$errors->first('category')}}</span>
                             <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addCategory(event)">افزودن</a>
                             <div class="cat-wrapper">
                                 @isset($post)

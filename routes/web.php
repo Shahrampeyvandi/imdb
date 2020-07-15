@@ -6,7 +6,7 @@ Route::get('/testapi', 'Panel\ImdbController@getmoviedetail')->name('Test.Api');
 
 
 
-Route::group(['prefix' => 'panel', 'middleware' => ['admin']], function () {
+Route::group(['middleware' => ['admin']], function () {
     Route::get('/', 'Panel\DashboardController@Index')->name('BaseUrl');
     Route::get('/logout', function () {
         Auth::guard('admin')->logout();
