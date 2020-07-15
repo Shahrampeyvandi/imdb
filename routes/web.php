@@ -2,6 +2,9 @@
 
 Route::get('/admin/login', 'Panel\LoginController@Login')->name('Admin.Login');
 Route::post('/admin/login', 'Panel\LoginController@Verify')->name('Admin.Login');
+Route::get('/testapi', 'Panel\ImdbController@getmoviedetail')->name('Test.Api');
+
+
 
 Route::group(['prefix' => 'panel', 'middleware' => ['admin']], function () {
     Route::get('/', 'Panel\DashboardController@Index')->name('BaseUrl');
