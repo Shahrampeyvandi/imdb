@@ -47,10 +47,10 @@
     <script src="{{asset('assets/vendors/select2/js/select2.min.js')}}"></script>
     <!-- begin::custom scripts -->
 
-    <script src="{{route('BaseUrl')}}/assets/vendors/dataTable/jquery.dataTables.min.js"></script>
-    <script src="{{route('BaseUrl')}}/assets/vendors/dataTable/dataTables.bootstrap4.min.js"></script>
-    <script src="{{route('BaseUrl')}}/assets/vendors/dataTable/dataTables.responsive.min.js"></script>
-    <script src="{{route('BaseUrl')}}/assets/js/examples/datatable.js"></script>
+    <script src="{{asset('assets/vendors/dataTable/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('assets/vendors/dataTable/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('assets/vendors/dataTable/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('assets/js/examples/datatable.js')}}"></script>
 
     @yield('js')
     <script src="{{asset('assets/js/custom.js')}}"></script>

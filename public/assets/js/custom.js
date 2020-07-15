@@ -172,6 +172,41 @@
         },
         "Please check your input."
     );
+
+     $.validator.addMethod(
+         "regex",
+         function (value, element, regexp) {
+             return this.optional(element) || regexp.test(value);
+         },
+         "Please check your input."
+     );
+     $("#loginForm").validate({
+         rules: {
+             password: {
+                 required: true,
+                 minlength:8,
+                 regex: /^[a-zA-Z]+[a-zA-Z\d]*$/,
+             },
+             mobile: {
+                 required: true,
+                 regex: /^09[0-9]{9}$/,
+             }
+            
+            
+         },
+         messages: {
+             password: {
+                 required: "لطفا رمز عبور خود را وارد نمایید",
+                 minlength: "رمز عبور بایستی حداقل 8 کاراکتر باشد",
+                  regex: "پسورد نمیتواند با عدد شروع شود",
+             },
+             mobile: {
+                 required: "لطفا شماره موبایل خود را وارد نمایید",
+                 regex: "موبایل دارای فرمت نامعتبر می باشد",
+             },
+           
+         },
+     });
      $("#add-plan").validate({
          rules: {
              name: {
@@ -191,6 +226,24 @@
              price: "لطفا قیمت اشتراک را وارد نمایید",
          },
      });
+       $("#add-blog").validate({
+           rules: {
+               name: {
+                   required: true,
+               },
+               link: {
+                   regex: /^https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,}$/,
+               },
+               desc: {
+                   required: true,
+               },
+           },
+           messages: {
+               name: "لطفا عنوان فایل را وارد نمایید",
+               link:{regex: "لینک وارد شده صحیح نمیباشد"},
+               desc: "لطفا توصیح برای بلاگ وارد نمایید",
+           },
+       });
 
     $(".add-actor").validate({
         rules: {
@@ -204,6 +257,57 @@
             fullname: "لطفا عنوان فایل را وارد نمایید",
         },
     });
+
+     $(".add-discount").validate({
+         rules: {
+             title: {
+                 required: true,
+             },
+             percent: {
+                 required: true,
+             },
+             code: {
+                 required: true,
+             },
+             date: {
+                 required: true,
+             },
+         },
+         messages: {
+             title: "لطفا عنوان را وارد نمایید",
+             percent: "لطفا درصد تخفیف را وارد نمایید",
+             code: "لطفا کد تخفیف را وارد نمایید",
+             date: "لطفا  تاریخ را وارد نمایید",
+         },
+     });
+
+
+    $(".add-video").validate({
+        rules: {
+            file: { required: true, accept: "mp4,mpga,mkv,3gp" },
+        },
+        messages: {
+            file: {
+                required: "فایل مورد نظر خود را انتخاب نمایید",
+                accept: "فرمت فایل غیرمجاز می باشد",
+            },
+        },
+    });
+    
+    $("#sendsms").validate({
+        rules: {
+            for: { required: true },
+            title: "required",
+            content: "required",
+        },
+        messages: {
+            for: {
+                required: "لطفا دریافت کننده را انتخاب کنید",
+            },
+            title: "لطفا عنوان پیام را وارد نمایید",
+            content: "لطفا متن پیام را وارد نمایید",
+        },
+    });
     $("#upload-file").validate({
         rules: {
             title: {
@@ -212,10 +316,10 @@
             },
             type: "required",
             pic: {
-                filesize: 2000 * 1024,
+                filesize: 200 * 1024,
                 accept: "jpg|jpeg|png|JPG|JPEG|PNG",
             },
-            file: { required: true, accept: "mp4,mpga,mkv,3gp" },
+           
 
             desc: "required",
             "category[]": "required",
@@ -233,6 +337,7 @@
                     return $("#movie-type").val() == "series";
                 },
             },
+           
         },
         messages: {
             title: {
@@ -250,10 +355,8 @@
             language: "لطفا زبان فیلم را وارد نمایید",
             season: "شماره فصل سریال را وارد نمایید",
             section: "شماره قسمت سریال را وارد نمایید",
-            file: {
-                required: "فایل مورد نظر خود را انتخاب نمایید",
-                accept: "فرمت فایل غیرمجاز می باشد",
-            },
+           
+           
         },
     });
 
@@ -275,6 +378,7 @@ var dropifyOptions = {
     },
     error: {
         fileSize: "فایل انتخابی شما بزرگتر از محدودیت حجم تعیین شده است",
+        imageFormat: "تصویر دارای فرمت نامعتبر میباشد",
     },
 };
 var drEvent = $(".dropify").dropify(dropifyOptions);
@@ -372,6 +476,22 @@ function addCategory(event) {
                             </div>
          `);
     }
+}
+
+function addBCategory(event) {
+     let val = $(event.target).prev().val();
+     if (val !== "") {
+         let id = Math.random();
+         let wrapper = $(event.target).next();
+         wrapper.append(`
+         <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="${id}" name="category"
+                                  value="${val}"
+                                    class="custom-control-input" checked>
+                                <label class="custom-control-label" for="${id}">${val}</label>
+                            </div>
+         `);
+     }
 }
 
 function addTag(event) {
@@ -525,3 +645,5 @@ function addQuality(event) {
          `);
     }
 }
+
+

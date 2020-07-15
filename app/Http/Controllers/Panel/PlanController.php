@@ -19,10 +19,28 @@ class PlanController extends Controller
         $plan = new Plan;
         $plan->name = $request->name;
         $plan->price = $request->price;
-        $plan->discount = $request->discount;
         $plan->days = $request->time;
         $plan->description = $request->desc;
         $plan->save();
+
+        return redirect()->route('Panel.PlanList');
+    }
+
+    public function Edit($id)
+    {
+        return view('Panel.Plans.Edit', ['plan' => Plan::find($id)]);
+    }
+
+    public function SaveEdit($id)
+    {
+
+        Plan::whereId($id)->update([
+            'name' => request()->name,
+            'price' => request()->price,
+            'days' => request()->time,
+            'description' => request()->desc,
+
+        ]);
 
         return redirect()->route('Panel.PlanList');
     }

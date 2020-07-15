@@ -65,7 +65,7 @@
                         <th>ردیف</th>
                         <th> عنوان </th>
                         <th>قیمت</th>
-                        <th>تخفیف</th>
+                      
                         <th>تعداد روز</th>
                         <th></th>
                     </tr>
@@ -87,11 +87,11 @@
                             <a href="#" class="text-primary">{{$plan->name}}</a>
                         </td>
                         <td>{{$plan->price}} تومان</td>
-                        <td class="text-success">{{$plan->discount}}</td>
-                        <td class="text-info">{{$plan->discount}}</td>
+                       
+                        <td class="text-info">{{$plan->days}}</td>
 
                         <td>
-                            <a href="{{route('Panel.FileEdit',$plan)}}" class="btn btn-sm btn-info">ویرایش</a>
+                            <a href="{{route('Panel.EditPlan',$plan)}}" class="btn btn-sm btn-info">ویرایش</a>
                         </td>
                         @endforeach
 

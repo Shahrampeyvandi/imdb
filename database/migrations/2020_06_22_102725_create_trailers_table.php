@@ -19,7 +19,7 @@ class CreateTrailersTable extends Migration
             $table->unsignedBigInteger('post_id');
             $table->string('poster');
             $table->string('url');
-            $table->string('duration');
+            $table->string('duration')->nullable();
             $table->timestamps();
         });
     }

@@ -9,8 +9,8 @@ class Episode extends Model
     protected $guarded = ['id'];
 
 
-    public function video()
+     public function videos()
     {
-        return $this->belongsTo(Video::class);
+        return $this->morphMany(Video::class, 'videoble');
     }
 }

@@ -77,7 +77,7 @@ return [
 
         'admins' => [
             'driver' => 'database',
-            'table' => App\Admin::class,
+            'table' => 'admins',
         ],
     ],
 

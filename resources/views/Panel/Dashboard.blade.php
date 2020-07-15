@@ -77,18 +77,17 @@
     </div>
 
     <div class="row mt-5">
-        <div class="col-md-6 offset-md-3">
+        <div class="col-md-6">
             <canvas id="visits" width="400" height="400"></canvas>
 
         </div>
-    </div>
-
-    <div class="row mt-5">
-        <div class="col-md-6 offset-md-3">
+         <div class="col-md-6">
             <canvas id="fileschart" width="400" height="400"></canvas>
 
         </div>
     </div>
+
+    >
 
 
 

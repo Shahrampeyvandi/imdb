@@ -102,7 +102,11 @@
                         <div class="row">
                             <div class="form-group col-md-6">
                                 @isset($post)
-                                <video src="{{$post->trailer}}"></video>
+
+                                <video width="350" controls>
+                                    <source src="{{asset($post->trailer->url)}}" type="video/mp4">
+                                    Your browser does not support HTML video.
+                                </video>
                                 @endisset
                                 <div class="form-row">
                                     <div class="col-md-3">
@@ -110,7 +114,8 @@
                                     </div>
                                     <div class="col-md-9">
                                         <input type="file" name="trailer" @isset($post) class="form-control" @else
-                                            class="dropify" data-default-file="" @endisset />
+                                            class="dropify" data-default-file="" data-allowed-file-extensions="mp4"
+                                            @endisset />
                                     </div>
                                 </div>
                             </div>
@@ -124,18 +129,23 @@
                                     </div>
                                     <div class="col-md-9">
                                         <input type="file" name="poster" @isset($post) class="form-control" @else
-                                            class="dropify" data-default-file="" @endisset />
+                                            class="dropify" data-default-file="" data-max-file-size="600K"
+                                            data-allowed-file-extensions="jpg jpeg png" @endisset />
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <label for="desc">تصاویر: </label>
                         @isset($post)
-                        @foreach ($post->images as $image)
-                        <div class=" col-md-3">
-                            <img src="{{$image->url}}" alt="">
+                        <div class="row">
+                            @foreach ($post->images as $image)
+                            <div class=" col-md-3">
+                                <a style="cursor: pointer;color:red" onclick="removeImage(event,{{$image->id}})"><i
+                                        class="fas fa-trash"></i></a>
+                                <img width="100%" src="{{asset($image->url)}}" alt="">
+                            </div>
+                            @endforeach
                         </div>
-                        @endforeach
                         @endisset
                         <span style="cursor: pointer;" href="" onclick="getClone(this)"><i class="fa fa-plus"></i>
                             افزودن </span>
@@ -143,9 +153,8 @@
                         <div class="row">
                             <div class=" col-md-3 image-box">
                                 <div class="form-group">
-
-                                    <input type="file" name="images[]" class="dropify" data-default-file="" />
-
+                                    <input type="file" name="images[]" class="dropify" data-max-file-size="300K"
+                                        data-allowed-file-extensions="png jpg jpeg" data-default-file="" />
                                 </div>
                             </div>
                         </div>
@@ -160,7 +169,7 @@
                                 @foreach ($post->categories as $key => $item)
                                 <div class="custom-control custom-checkbox custom-control-inline">
                                     <input type="checkbox" id="{{$key+1}}" name="category[]" value="{{$item->name}}"
-                                    {{$post->categories()->pluck('id')->contains($item->id) ? 'checked' : ''}}
+                                        {{$post->categories()->pluck('id')->contains($item->id) ? 'checked' : ''}}
                                         class="custom-control-input">
                                     <label class="custom-control-label" for="{{$key+1}}">{{$item->name}}</label>
                                 </div>
@@ -173,12 +182,10 @@
                                     <label class="custom-control-label" for="{{$key+1}}">{{$item->name}}</label>
                                 </div>
                                 @endforeach
-
                                 @endisset
-
                             </div>
                         </div>
-                      
+
                         <div class="casts mt-3">
                             <div class="d-flex justify-content-between">
                                 <h6 class="">بازیگران: </h6>
@@ -214,7 +221,6 @@
                                         {{isset($post) && $post->writers()->pluck('id')->contains($writer->id) ? 'selected' : ''}}>
                                         {{$writer->name}}</option>
                                     @endforeach
-
                                 </select>
                             </div>
                         </div>
@@ -230,12 +236,10 @@
                             <div class="form-group">
                                 <select name="directors[]" class="js-example-basic-single" multiple dir="rtl">
                                     @foreach ($directors as $director)
-
                                     <option value="{{$director->id}}"
                                         {{isset($post) && $post->directors()->pluck('id')->contains($director->id) ? 'selected' : ''}}>
                                         {{$director->name}}</option>
                                     @endforeach
-
                                 </select>
                             </div>
                         </div>
@@ -244,28 +248,16 @@
                             <input type="text" class="form-control mb-2" name="" id="" placeholder="جدید">
                             <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addLanguage(event)">افزودن</a>
                             <div class="cat-wrapper">
-                                @foreach (\App\Language::all() as $language)
+
+                                @foreach (\App\Language::all() as $key => $language)
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="language" name="language" value="{{$language->id}}"
+                                    <input type="radio" id="ln-{{$key+1}}" name="language" value="{{$language->name}}"
                                         {{isset($post) && $post->languages()->pluck('id')->contains($language->id) ? 'checked' : ''}}
                                         class="custom-control-input">
-                                    <label class="custom-control-label" for="language">
+                                    <label class="custom-control-label" for="ln-{{$key+1}}">
                                         {{$language->name}}</label>
                                 </div>
                                 @endforeach
-                            </div>
-                        </div>
-                        <div class="series-options">
-                            <div class="casts mt-3">
-                                <h6 class="">فصل</h6>
-                                <input type="number" class="form-control mb-2" name="season" id="season"
-                                    placeholder="شماره فصل">
-
-                            </div>
-                            <div class="casts mt-3">
-                                <h6 class="">قسمت</h6>
-                                <input type="number" class="form-control mb-2" name="section" id="section"
-                                    placeholder="شماره قسمت">
 
                             </div>
                         </div>
@@ -274,21 +266,25 @@
                             <input type="text" class="form-control mb-2" name="" id="" placeholder="جدید">
                             <a href="#" class="btn btn-sm btn-primary mb-3" onclick="addAward(event)">افزودن</a>
                             <div class="cat-wrapper">
+                                @isset($post->awards)
+                                @foreach ($post->awards as $key => $award)
                                 <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" id="awards" name="awards[]" value="ماجراجویی"
-                                        class="custom-control-input">
-                                    <label class="custom-control-label" for="awards">
-                                        اول</label>
+                                    <input type="checkbox" id="award-{{$key+1}}" name="awards[]" value="{{$award}}"
+                                        class="custom-control-input" checked>
+                                    <label class="custom-control-label" for="award-{{$key+1}}">
+                                        {{$award}}</label>
                                 </div>
+                                @endforeach
+                                @endisset
 
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="row">
                     <div class="col-md-12 text-center">
-                        <button type="submit" class="btn btn-primary">ثبت اطلاعات </button>
+                        <button type="submit" class="btn btn-primary"> ادامه &nbsp;<i
+                                class="fas fa-arrow-circle-left"></i> </button>
                     </div>
                 </div>
             </form>
@@ -305,6 +301,7 @@
     label.error {
         font-size: 12px;
         color: red;
+
         /* position: absolute; */
         /* top: -50px; */
         /* right: 70px; */
@@ -315,17 +312,19 @@
 
 @section('js')
 <script>
-    $('.series-options').hide()
-
-            function seriesOptions (event) {
-                let val = $(event.target).val()
-               
-                if(val == "series") {
-                     $('.series-options').show()
-                }else{
-                    $('.series-options').hide()
-                }
+    function removeImage (event,id) {
+            event.preventDefault()
+            var target =$(event.target)
+            data = { id:id, _method: 'delete',_token: "{{ csrf_token() }}" };
+            url='{{route('Panel.DeleteImage')}}';
+            request = $.post(url, data);
+            request.done(function(res){
+            target.parents('.col-md-3').remove()
+        });
             }
+              
+               
+              
 
            
 </script>

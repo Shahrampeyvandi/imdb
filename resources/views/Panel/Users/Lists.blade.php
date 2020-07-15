@@ -2,38 +2,30 @@
 
 @section('content')
  <!-- modals -->
-      <div
-        class="modal fade"
-        id="exampleModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">اخطار</h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
+                <h5 class="modal-title" id="exampleModalLabel">اخطار</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
-              موارد علامت زده شده حذف شوند؟
+                موارد علامت زده شده حذف شوند؟
             </div>
             <div class="modal-footer">
-              <a type="button" class="delete btn btn-danger text-white"
-                >حذف!
-              </a>
+                <form action="" method="post">
+                    @csrf
+                    @method('delete')
+                    <input type="hidden" name="video_id" id="video_id" value="">
+                    <a href="#" class="deleteposts btn btn-danger text-white">حذف! </a>
+                </form>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
+</div>
 
       <div
         class="modal fade bd-example-modal-lg-edit"
@@ -52,64 +44,14 @@
       <div class="container-fluid">
         <div class="card">
           <div class="container_icon card-body d-flex justify-content-end">
-            <div class="delete-edit" style="display: none;">
-              {{-- @if (auth()->user()->can('user_delete'))
-              <a
-                href="#"
-                title="حذف "
-                data-toggle="modal"
-                data-target="#exampleModal"
-                class="order-delete m-2"
-              >
+        <div class="delete-edit" style="display:none;">
+            <a href="#" title="حذف " data-toggle="modal" data-target="#exampleModal" class="order-delete   m-2">
                 <span class="__icon bg-danger">
-                  <i class="fa fa-trash"></i>
+                    <i class="fa fa-trash"></i>
                 </span>
-              </a> --}}
-              {{-- @endif @if (auth()->user()->can('user_edit'))
-
-              <a
-                href="#"
-                title="ویرایش"
-                data-toggle="modal"
-                data-target=".bd-example-modal-lg-edit"
-                class="mx-2"
-              >
-                <span class="edit-personal __icon bg-info">
-                  <i class="fa fa-edit"></i>
-                </span>
-              </a>
-              @endif --}}
-            </div>
-
-            <div>
-              <a href="#" class="mx-2 btn--filter" title="فیلتر اطلاعات">
-                <span class="__icon bg-info">
-                  <i class="fa fa-search"></i>
-                </span>
-              </a>
-              {{-- @if (auth()->user()->can('insert_user'))
-              <a
-                href="#"
-                data-toggle="modal"
-                data-target=".bd-example-modal-lg"
-                title="افزودن کاربر"
-              >
-                <span class="__icon bg-success">
-                  <i class="fa fa-plus"></i>
-                </span>
-              </a>
-              @endif --}}
-              <a
-                href=" {{route('Panel.UserList')}} "
-                title="تازه سازی"
-                class="mx-2"
-              >
-                <span class="__icon bg-primary">
-                  <i class="fa fa-refresh"></i>
-                </span>
-              </a>
-            </div>
-          </div>
+            </a>
+        </div>
+    </div>
         </div>
 
         <div class="card">
@@ -125,38 +67,22 @@
                     <th></th>
                     <th>ردیف</th>
                     <th>
-                      <a href="#" data-id="name" class="name_field text-white">
+                     
                         نام
-                        <i class="fa fa-angle-down"></i>
-                      </a>
+                     
+              
                     </th>
                     <th>
-                      <a
-                        href="#"
-                        data-id="lastname"
-                        class="name_field text-white"
-                      >
+                    
                         نام خانوادگی
-                        <i class="fa fa-angle-down"></i>
-                      </a>
+                     
+                    
                     </th>
-                    <th>
-                      <a
-                        href="#"
-                        data-id="username"
-                        class="name_field text-white"
-                      >
-                        نام کاربری
-                        <i class="fa fa-angle-down"></i>
-                      </a>
-                    </th>
-                    <th>نقش</th>
-                    <th>کد ملی</th>
                     <th>شماره موبایل</th>
                     <th>پروفایل عکس</th>
                   </tr>
                 </thead>
-                {{-- <tbody class="tbody">
+                <tbody class="tbody">
                   @foreach ($users as $key=>$user)
                   <tr>
                     <td>
@@ -179,26 +105,71 @@
                       </div>
                     </td>
                     <td>{{$key+1}}</td>
-                    <td>{{$user->user_firstname}}</td>
-                    <td>{{$user->user_lastname}}</td>
-                    <td>{{$user->user_username}}</td>
-                    <td>{{$user->user_responsibility}}</td>
-                    <td>{{$user->user_national_code}}</td>
-                    <td>{{$user->user_mobile}}</td>
+                    <td>{{$user->first_name}}</td>
+                    <td>{{$user->last_name}}</td>
+                 
+                    <td>{{$user->mobile}}</td>
                     <td>
-                      @if ($user->user_prfile_pic !== '' &&
-                      $user->user_prfile_pic !== null ) <img width="75px"
+                      @if ($user->avatar !== '' &&
+                      $user->avatar !== null ) <img width="75px"
                       class="img-fluid " src="
-                      {{asset("uploads/brokers/$user->user_prfile_pic")}} " />
+                      {{asset("uploads/brokers/$user->avatar")}} " />
                       @else <img width="75px" class="img-fluid " src="
-                      {{asset("Pannel/img/avatar.jpg")}} " /> @endif
+                      {{asset("assets/images/avatar.png")}} " /> @endif
                     </td>
                   </tr>
                   @endforeach
-                </tbody> --}}
+                </tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
+@endsection
+
+@section('js')
+<script>
+    $('table input[type="checkbox"]').change(function(){
+            if( $(this).is(':checked')){
+            $(this).parents('tr').css('background-color','#41f5e07d');
+            }else{
+                $(this).parents('tr').css('background-color','');
+            }
+            array=[]
+            $('table input[type="checkbox"]').each(function(){
+                if($(this).is(':checked')){
+                array.push($(this).attr('data-id'))
+               }
+               if(array.length !== 0){
+                $('.delete-edit').show()
+                if (array.length !== 1) {
+                    $('.container_icon').removeClass('justify-content-end')
+                    $('.container_icon').addClass('justify-content-between')
+                    $('.edit-personal').hide()
+                }else{
+                    $('.container_icon').removeClass('justify-content-end')
+                    $('.container_icon').addClass('justify-content-between')
+                    $('.edit-personal').show()
+                }
+            }
+            else{
+                $('.container_icon').removeClass('justify-content-between')
+                $('.container_icon').addClass('justify-content-end')
+                $('.delete-edit').hide()
+            }
+        })
+            
+    })
+    
+     $('.deleteposts').click(function(e){
+            e.preventDefault()
+            data = { array:array, _method: 'delete',_token: "{{ csrf_token() }}" };
+            url='{{route('Panel.DeleteUser')}}';
+            request = $.post(url, data);
+            request.done(function(res){
+            location.reload()
+        });
+    })
+</script>
+
 @endsection

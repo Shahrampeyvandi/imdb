@@ -17,10 +17,15 @@ class Post extends Model
         return $this->belongsToMany(Category::class, 'post_category', 'post_id', 'category_id');
     }
 
-    public function season()
+     public function episodes()
     {
-        return $this->hasMany(Season::class);
+        return $this->hasMany(Episode::class);
     }
+
+    // public function season()
+    // {
+    //     return $this->hasMany(Season::class);
+    // }
     public function awards()
     {
         return $this->hasMany(Award::class);

@@ -16,7 +16,7 @@ class Video extends Model
 
     public function quality()
     {
-        return $this->hasOne(Quality::class,'quality_id');
+        return $this->belongsTo(Quality::class,'quality_id');
     }
  
 }

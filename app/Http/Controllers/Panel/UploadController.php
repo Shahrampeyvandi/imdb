@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Panel;
 use App\Actor;
 use App\Category;
 use App\Director;
+use App\Episode;
 use App\Http\Controllers\Controller;
+use App\Image;
 use App\Language;
 use App\Post;
 use App\Quality;
@@ -18,10 +20,12 @@ use Illuminate\Support\Facades\Redirect;
 class UploadController extends Controller
 {
 
-   public function list(Request $request) {
-        $posts = Post::latest()->get();
+    function list(Request $request) {
 
-        return view('Panel.Files.List', compact('posts'));
+        $movies = Post::where('type', 'movies')->latest()->get();
+        $series = Post::where('type', 'series')->latest()->get();
+
+        return view('Panel.Files.List', compact(['movies', 'series']));
     }
     public function Add()
     {
@@ -73,20 +77,20 @@ class UploadController extends Controller
                 $post->directors()->attach($director);
             }
 
-            foreach ($request->language as $key => $language) {
-                if ($id = Language::check($language)) {
-                    $post->languages()->attach($id);
-                } else {
-                    $post->languages()->create(['name' => $language]);
-                }
+            if ($id = Language::check($request->language)) {
+                $post->languages()->attach($id);
+            } else {
+                $post->languages()->create(['name' => $request->language]);
             }
 
-            if ($request->type == 'series') {
-                $season = $post->seasons()->create(['number' => $request->season]);
-                $season->sections()->create(['number' => $request->section]);
-            }
-            foreach ($request->awards as $key => $award) {
-                $post->awards()->create(['title' => $award]);
+            // if ($request->type == 'series') {
+            //     $season = $post->seasons()->create(['number' => $request->season]);
+            //     $season->sections()->create(['number' => $request->section]);
+            // }
+            if ($request->awards) {
+                foreach ($request->awards as $key => $award) {
+                    $post->awards()->create(['title' => $award]);
+                }
             }
 
             if ($request->hasFile('trailer')) {
@@ -97,11 +101,24 @@ class UploadController extends Controller
 
                 $post->trailer()->create(['name' => $post->name, 'poster' => $post->poster, 'url' => $trailer]);
             }
+            if ($request->hasFile('images')) {
+                foreach ($request->images as $key => $image) {
+                    $picextension = $image->getClientOriginalExtension();
+                    $fileName = 'image_' . date("Y-m-d") . '_' . time() . '.' . $picextension;
+                    $image->move($destinationPath, $fileName);
+                    $imageUrl = "$destinationPath/$fileName";
+                    $post->images()->create([
+                        'url' => $imageUrl,
+                    ]);
+                }
+            }
 
         } else {
             return back();
         }
-
+        if ($post->type == "series") {
+            return Redirect::route('Panel.UploadEpisode', ['id' => $post->id]);
+        }
         return Redirect::route('Panel.UploadVideo', ['id' => $post->id]);
 
     }
@@ -119,25 +136,31 @@ class UploadController extends Controller
     {
 
         $id = request()->id;
-        if ($id) {
 
-            $videos = Post::find($id)->videos;
+        if ($id) {
+            $post = Post::find($id);
+            if (isset(request()->episode)) {
+                $episode = Episode::find(request()->episode);
+                $videos = $episode->videos;
+            } else {
+                $videos = $post->videos;
+            }
+            $episode_id = request()->episode;
+
         } else {
             $videos = [];
+            $post = null;
+            $episode_id = null;
         }
-        return view('Panel.Files.UploadVideo', compact(['id', 'videos']));
+        return view('Panel.Files.UploadVideo', compact(['id', 'videos', 'post', 'episode_id']));
     }
 
     public function SaveVideo(Request $request)
     {
+        if (!$request->has('post') && $request->post == '') {
 
-        $validatedData = $request->validate([
-            'file' => 'required',
-            'quality' => 'required',
-        ], [
-            'file.required' => 'فایل را وارد نمایید',
-            'quality.required' => 'کیفیت فیلم را وارد نمایید',
-        ]);
+            return response()->json('پست مورد نظر یافت نشد', 404);
+        }
 
         if (request()->hasFile('file')) {
             $destinationPath = 'files/videos';
@@ -157,42 +180,68 @@ class UploadController extends Controller
         }
 
         $post = Post::find($request->post);
-        $post->videos()->create([
-            'url' => $url,
-            'quality' => $quality_id,
-            'description' => null,
-        ]);
+
+        if (isset($request->episode)) {
+            $episode = Episode::find($request->episode);
+            $episode->videos()->create([
+                'url' => $url,
+                'quality' => $quality_id,
+                'description' => null,
+            ]);
+        } else {
+            $post->videos()->create([
+                'url' => $url,
+                'quality' => $quality_id,
+                'description' => null,
+            ]);
+        }
 
         return response()->json('ویدئو با موفقیت آپلود شد', 200);
     }
 
-    public function DeletePost(Request $request)
+    public function AddEpisode()
     {
-
-        foreach ($request->array as $key => $id) {
+        $id = request()->id;
+        if ($id) {
             $post = Post::find($id);
-            File::delete(public_path() . $post->poster);
-            File::delete(public_path() . $post->trailer);
-            foreach ($post->images as $key => $obj) {
-                File::delete(public_path() . $obj->url);
-            }
-            $post->delete();
+            $episodes = $post->episodes;
+        } else {
+            $episodes = [];
+            $post = null;
         }
-        return back();
+        return view('Panel.Files.AddEpisode', compact(['id', 'episodes', 'post']));
     }
 
-    public function DeleteVideo(Request $request)
+    public function SaveEpisode(Request $request)
     {
-        $video = Video::find($request->video_id);
-        File::delete(public_path() . $video->url);
-        $video->delete();
-        return back();
+
+        $post = Post::find($request->post);
+        if (request()->hasFile('thumb')) {
+            $destinationPath = 'files/series/thumbs';
+            $picextension = request()->file('thumb')->getClientOriginalExtension();
+            $fileName = $post->name . '-' . $request->season . '-' . $request->section . date("Y-m-d") . '_' . time() . '.' . $picextension;
+            request()->file('thumb')->move($destinationPath, $fileName);
+            $thumb = "$destinationPath/$fileName";
+        } else {
+            $thumb = '';
+        }
+
+        $episode = $post->episodes()->create(['name' => $request->name,
+            'duration' => '00',
+            'description' => $request->description,
+            'poster' => $thumb,
+            'season' => $request->season,
+            'section' => $request->section,
+        ]);
+
+        return Redirect::route('Panel.UploadVideo', ['id' => $post->id, 'episode' => $episode->id]);
     }
 
     public function EditPost(Request $request)
     {
-        dd($request->all());
+
         $post = Post::find($request->post_id);
+
         $destinationPath = "files/posts/$request->title";
         if ($request->hasFile('poster')) {
             File::delete(public_path() . $post->poster);
@@ -217,6 +266,7 @@ class UploadController extends Controller
             if ($post->categories()->pluck('name')->contains($category)) {
                 continue;
             }
+
             if ($id = Category::check($category)) {
                 $post->categories()->attach($id);
             } else {
@@ -244,25 +294,76 @@ class UploadController extends Controller
             $post->directors()->attach($director);
         }
 
-        foreach ($request->language as $key => $language) {
-            if ($post->languages()->pluck('name')->contains($language)) {
-                continue;
+        $post->languages()->detach();
+        if ($id = Language::check($request->language)) {
+
+            $post->languages()->attach($id);
+        } else {
+            $post->languages()->create(['name' => $request->language]);
+        }
+
+        if ($request->hasFile('images')) {
+            foreach ($request->images as $key => $image) {
+                $picextension = $image->getClientOriginalExtension();
+                $fileName = 'image_' . date("Y-m-d") . '_' . time() . '.' . $picextension;
+                $image->move($destinationPath, $fileName);
+                $imageUrl = "$destinationPath/$fileName";
+                $post->images()->create([
+                    'url' => $imageUrl,
+                ]);
             }
-                if ($id = Language::check($language)) {
-                    $post->languages()->attach($id);
-                } else {
-                    $post->languages()->create(['name' => $language]);
-                }
+        }
+
+        if ($request->hasFile('trailer')) {
+
+            if ($post->trailer) {
+                File::delete(public_path() . $post->trailer->url);
+                $post->trailer()->delete();
             }
 
-            if ($request->type == 'series') {
-                $post->season()->delete();
-                $season = $post->seasons()->create(['number' => $request->season]);
-                $season->sections()->create(['number' => $request->section]);
+            $picextension = $request->file('trailer')->getClientOriginalExtension();
+            $fileName = 'trailer_' . date("Y-m-d") . '_' . time() . '.' . $picextension;
+            $request->file('trailer')->move($destinationPath, $fileName);
+            $trailer = "$destinationPath/$fileName";
+
+            $post->trailer()->create(['name' => $post->name, 'poster' => $post->poster, 'url' => $trailer]);
+        }
+
+        return Redirect::route('Panel.FileList');
+
+    }
+
+    public function DeletePost(Request $request)
+    {
+
+        foreach ($request->array as $key => $id) {
+            $post = Post::find($id);
+            File::delete(public_path() . $post->poster);
+            if ($post->trailer) {
+                File::delete(public_path() . $post->trailer->url);
             }
-            foreach ($request->awards as $key => $award) {
-                $post->awards()->create(['title' => $award]);
+            foreach ($post->images as $key => $obj) {
+                File::delete(public_path() . $obj->url);
             }
+            $post->delete();
+        }
+        return back();
+    }
+
+    public function DeleteVideo(Request $request)
+    {
+        $video = Video::find($request->video_id);
+        File::delete(public_path() . $video->url);
+        $video->delete();
+        return back();
+    }
+
+    public function DeleteImage(Request $request)
+    {
+        $image = Image::find($request->id);
+        File::delete(public_path() . $image->url);
+        $image->delete();
+        return response()->json('تصویر با موفقیت حذف شد');
 
     }
 }

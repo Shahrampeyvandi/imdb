@@ -16,11 +16,12 @@ class CreateEpisodesTable extends Migration
         Schema::create('episodes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('season_id');
             $table->string('duration');
             $table->string('description');
             $table->string('poster');
-            $table->integer('number');
+            $table->integer('season');
+            $table->integer('section');
+             $table->integer('post_id');
             $table->timestamps();
         });
     }

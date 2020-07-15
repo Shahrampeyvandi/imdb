@@ -18,7 +18,8 @@ class CreateBlogsTable extends Migration
             $table->string('title');
             $table->string('poster');
             $table->text('description');
-            $table->unsignedBigInteger('views');
+            $table->unsignedBigInteger('views')->default(0);
+            $table->string('link')->nullable();
             $table->timestamps();
         });
     }

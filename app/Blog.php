@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Blog extends Model
 {
     protected $guarded = ['id'];
+    protected $table = 'blogs';
 
     public function images()
     {
@@ -15,6 +16,6 @@ class Blog extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(BlogCategory::class, 'blog_category', 'blog_id', 'category_id');
+        return $this->belongsToMany(BlogCategory::class, 'blog_bcategory', 'blog_id', 'category_id');
     }
 }

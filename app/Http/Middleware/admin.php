@@ -17,11 +17,11 @@ class admin
      */
     public function handle($request, Closure $next)
     {
+       
         if (Auth::guard('admin')->check()) {
            
             return $next($request);
         }else{
-
             return redirect()->route('Admin.Login');
         }
         

@@ -32,8 +32,8 @@
                         <img src="assets/media/image/dark-logo.png" class="m-l-15" width="40" alt="">
                         <h3 class="m-0">مدیریت </h3>
                     </div>
-
-                <form action="{{route('Admin.Login')}}" method="POST">
+                    @include('Includes.Panel.errors')
+                <form id="loginForm" action="{{route('Admin.Login')}}" method="POST">
                     @csrf
                         <div class="form-group mb-4">
                             <input type="number" name="mobile" class="form-control form-control-lg" id="exampleInputEmail1" autofocus
@@ -46,7 +46,7 @@
                         <button class="btn btn-primary btn-lg btn-block btn-uppercase mb-4">ورود</button>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="customCheck">
+                                <input type="checkbox" class="custom-control-input" name="rememberme" id="customCheck">
                                 <label class="custom-control-label" for="customCheck">به خاطر سپاری</label>
                             </div>
                             <a href="#" class="auth-link text-black">فراموشی رمز عبور؟</a>

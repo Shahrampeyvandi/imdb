@@ -16,7 +16,7 @@ class CreateBcategoryTable extends Migration
         Schema::create('bcategory', function (Blueprint $table) {
             $table->id(); 
            $table->string('name');
-            $table->string('latin');
+            $table->string('latin')->nullable();
             $table->timestamps();
         });
     }

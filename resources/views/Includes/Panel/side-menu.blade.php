@@ -14,14 +14,20 @@
             </li>
             <li><a href="#"><i class="icon ti-list"></i> <span>وبلاگ</span> </a>
                 <ul>
-                    <li><a href="#">افزودن</a></li>
-                <li><a href="#">لیست</a></li>
+                    <li><a href="{{route('Panel.AddBlog')}}">افزودن</a></li>
+                <li><a href="{{route('Panel.BlogList')}}">لیست</a></li>
                 </ul>
             </li>
              <li><a href="#"><i class="icon ti-star"></i> <span>اشتراک</span> </a>
                 <ul>
                 <li><a href="{{route('Panel.AddPlan')}}">افزودن</a></li>
                 <li><a href="{{route('Panel.PlanList')}}">لیست</a></li>
+                <li><a href="{{route('Panel.DiscountList')}}">کدهای تخفیف</a></li>
+                </ul>
+            </li>
+             <li><a href="#"><i class="icon ti-envelope"></i> <span>ارتباط با کاربران</span> </a>
+                <ul>
+                <li><a href="{{route('Panel.SendMessage')}}">ارسال پیام</a></li>
                 </ul>
             </li>
 
